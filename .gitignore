@@ -14,8 +14,7 @@ tests/.cache/v/cache/lastfailed
 mlruns
 
 # datasets
-*.csv
-*.json
+
 
 ## Python Section - See https://github.com/github/gitignore/blob/master/Python.gitignore
 ##
