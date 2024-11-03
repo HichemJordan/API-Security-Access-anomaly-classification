@@ -27,3 +27,33 @@ def aggregate_node_features(
     agg_data = data.group_by(by).agg(aggs)
 
     return agg_data
+
+
+def feature_predictive_power(
+    data: pl.DataFrame, x: str, y: str, plot: bool = True
+) -> np.float32:
+    """Utility to calcualte predictive power of a feature and plot its relationship with the target
+    Args:
+        data (pl.DataFrame): input dataframe
+        x (str): name of the feature
+        y (str): name of the target
+        plot (bool, optional): indicator whether you want to plot the relationship. Defaults to True.
+
+    Returns:
+        np.float32: predictive power score
+    """
+    data_pd = data.select([x, y]).to_pandas()
+    score = np.float32(pps.score(data_pd, x, y)["ppscore"]).round(4)
+
+    if plot:
+        print(f"Predictive Power Score: {score}")
+        fig = px.histogram(
+            x=data_pd[x],
+            color=data_pd[y],
+            marginal="box",
+            histnorm="probability",
+            title=f"{x} distribution by {y}",
+        )
+        fig.show()
+
+    return score
