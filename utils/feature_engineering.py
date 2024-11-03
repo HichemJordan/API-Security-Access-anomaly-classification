@@ -57,3 +57,42 @@ def feature_predictive_power(
         fig.show()
 
     return score
+
+
+def get_graph_features(data: pl.DataFrame, node_features: bool = True) -> pl.DataFrame:
+    """Pipeline function to generate graph features
+
+    Args:
+        data (pl.DataFrame): dataframe with edges 'from' and 'to'
+        node_features (bool, optional): Indicator whether you want to create node level features. Defaults to True.
+
+    Returns:
+        pl.DataFrame: dataframe with engineered features
+    """
+    graph_features = (
+        data.groupby("_id")
+        .agg(pl.count().alias("n_connections"), pl.col("from"), pl.col("to"))
+        .with_columns(
+            pl.concat_list("from", "to")
+            .list.unique()
+            .list.lengths()
+            .alias("n_unique_nodes")
+        )
+        .select(["_id", "n_connections", "n_unique_nodes"])
+    )
+
+    if node_features:
+        node_features_agg = aggregate_node_features(
+            data,
+            node_features=[
+                "global_source_degrees",
+                "global_dest_degrees",
+                "local_source_degrees",
+                "local_dest_degrees",
+            ],
+            by="_id",
+        )
+
+        graph_features = graph_features.join(node_features_agg, on="_id")
+
+    return graph_features
