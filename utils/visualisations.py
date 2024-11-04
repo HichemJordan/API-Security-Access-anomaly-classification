@@ -18,7 +18,7 @@ def bar_plot(data: pl.DataFrame, column: str, title: str) -> go.Figure:
     counts = data[column].value_counts(sort=True)
     fig = px.bar(
         x=counts[column].to_list(),
-        y=counts["counts"].to_list(),
+        y=counts["count"].to_list(),
         text_auto=True,
         title=title,
         color_discrete_sequence=px.colors.qualitative.Antique,
