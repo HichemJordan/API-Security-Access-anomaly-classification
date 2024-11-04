@@ -48,8 +48,8 @@ def proportion_plot(
     Returns:
         go.Figure: resulting barplot as plotly Figure
     """
-    counts = data.groupby(column, target).agg(pl.count())
-    target_counts = counts.groupby(column).agg(pl.col("count").sum().alias("total"))
+    counts = data.group_by(column, target).agg(pl.count())
+    target_counts = counts.group_by(column).agg(pl.col("count").sum().alias("total"))
     proportions = counts.join(target_counts, on=column)
     proportions = proportions.with_columns(
         proportion=pl.col("count") / pl.col("total")
@@ -102,7 +102,7 @@ def boxplot_by_bin_with_target(
     )
 
     order = (
-        temp.groupby(f"{column_to_bin}_binned")
+        temp.group_by(f"{column_to_bin}_binned")
         .agg(pl.col(column_to_bin).min().alias("min"))
         .sort("min")[f"{column_to_bin}_binned"]
         .to_list()
