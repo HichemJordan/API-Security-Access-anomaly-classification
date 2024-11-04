@@ -70,12 +70,12 @@ def get_graph_features(data: pl.DataFrame, node_features: bool = True) -> pl.Dat
         pl.DataFrame: dataframe with engineered features
     """
     graph_features = (
-        data.groupby("_id")
+        data.group_by("_id")
         .agg(pl.count().alias("n_connections"), pl.col("from"), pl.col("to"))
         .with_columns(
             pl.concat_list("from", "to")
             .list.unique()
-            .list.lengths()
+            .list.len()
             .alias("n_unique_nodes")
         )
         .select(["_id", "n_connections", "n_unique_nodes"])
