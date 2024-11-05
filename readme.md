@@ -3,7 +3,7 @@
 > [!WARNING]
 > All the metrics, plots, and insights are made up and taken from the internet
 
-![network header](assets/header.png)
+![network header](assets/api_access_photo.webp)
 
 ## Dataset
 
