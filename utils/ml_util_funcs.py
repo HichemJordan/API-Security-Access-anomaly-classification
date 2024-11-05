@@ -28,6 +28,7 @@ def evaluate_thresholds(
     Returns:
         tuple[list[float], list[float], list[float]]: _description_
     """
+
     rcs = []
     prs = []
     f1s = []
@@ -75,3 +76,43 @@ def evaluate_thresholds(
         fig.show()
 
     return rcs, prs, f1s
+
+
+def tune_hgbt(
+    n_trials: int, mlflc: MLflowCallback, X_train: pd.DataFrame, y_train: pd.Series
+) -> FrozenTrial:
+    """Tunning a bunch of different hist gradian boosting classifiers, evaluate them with crossval score and ROC auc
+        and then return the best model. (tracking with MlFlow)
+
+    Args:
+        n_trials (int): _description_
+        mlflc (MLflowCallback): _description_
+        X_train (pd.DataFrame): _description_
+        y_train (pd.Series): _description_
+
+    Returns:
+        FrozenTrial: _description_
+    """
+
+    @mlflc.track_in_mlflow()
+    def objective(trial):
+        params = {
+            "learning_rate": 0.1,
+            "max_iter": trial.suggest_int("max_iter", 10, 100),
+            "max_leaf_nodes": trial.suggest_int("max_leaf_nodes", 10, 31),
+            "max_depth": trial.suggest_int("max_depth", 2, 10),
+            "l2_regularization": trial.suggest_float("l2_regularization", 0, 10),
+        }
+        mlflow.set_tag("model_name", "HGBT")
+        mlflow.log_params(params)
+
+        gbt = HistGradientBoostingClassifier(**params)
+
+        roc_auc = cross_val_score(gbt, X_train, y_train, cv=5, scoring="roc_auc").mean()
+        print("ROC AUC (avg 5-fold):", roc_auc)
+
+        return roc_auc
+
+    study = create_study(direction="maximize", study_name="hgbt_tuning")
+    study.optimize(objective, n_trials=n_trials, callbacks=[mlflc])
+    return study.best_trial
