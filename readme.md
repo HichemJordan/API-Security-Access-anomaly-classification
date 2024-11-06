@@ -29,9 +29,9 @@ To achieve this objective, it was further broken down into the following 5 techn
 
 From the exploratory data analysis, we found out that anomalous behavviour patterns are cahracterised by:
 
-* Insight about anomaly vs normal #1
-* Insight about anomaly vs normal #2
-* Insight about anomaly vs normal #3
+* Most of the traffic comes from the default source, only 9% comes from datacenters
+* All the datacenter traffic is considered to be anomalous
+* Longer sequences with faster inter API access durations are not more likely to be anomalou
 
 ## Engineered Features
 
