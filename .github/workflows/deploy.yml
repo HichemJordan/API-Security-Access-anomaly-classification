@@ -31,7 +31,7 @@ jobs:
       - name: Build and Push Docker Image
         env:
           ECR_REGISTRY: ${{ secrets.AWS_REGION }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-          ECR_REPOSITORY: my-fastapi-app
+          ECR_REPOSITORY: ecrrepo
           IMAGE_TAG: latest
         run: |
           # Create ECR repository if it doesn't exist
@@ -49,14 +49,14 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           EB_APP_NAME: ${{ secrets.EB_APP_NAME }}
           EB_ENV_NAME: ${{ secrets.EB_ENV_NAME }}
-          ECR_IMAGE: ${{ secrets.AWS_REGION }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/my-fastapi-app:latest
+          ECR_IMAGE: ${{ secrets.AWS_REGION }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/ecrrepo:latest
         run: |
           # Create a new application version in Elastic Beanstalk using the latest Docker image
           aws elasticbeanstalk create-application-version --application-name $EB_APP_NAME \
             --version-label $GITHUB_SHA --source-bundle S3Bucket=my-s3-bucket,S3Key=my-key \
             --region $AWS_REGION
 
-          # Update the Elastic Beanstalk environment to use the new version
+          # Update the ElastAWSic Beanstalk environment to use the new version
           aws elasticbeanstalk update-environment --application-name $EB_APP_NAME \
             --environment-name $EB_ENV_NAME --version-label $GITHUB_SHA \
             --region $AWS_REGION
