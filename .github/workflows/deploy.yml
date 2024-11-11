@@ -26,7 +26,11 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 209479286821.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-
+      
+      # Print ECR_REGISTRY to verify its value
+      - name: Verify ECR_REGISTRY Value
+        run: echo "ECR_REGISTRY is set to $ECR_REGISTRY"
+        
       # Step 4: Build and push the Docker image to ECR
       - name: Build and Push Docker Image
         env:
