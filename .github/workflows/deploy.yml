@@ -35,10 +35,6 @@ jobs:
           ECR_REPOSITORY: ecrrepo
           IMAGE_TAG: latest
         run: |
-          echo "ECR_REGISTRY is set to $ECR_REGISTRY"
-          # Create ECR repository if it doesn't exist
-          aws ecr describe-repositories --repository-names $ECR_REPOSITORY || aws ecr create-repository --repository-name $ECR_REPOSITORY
-
           # Build and push the Docker image
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
