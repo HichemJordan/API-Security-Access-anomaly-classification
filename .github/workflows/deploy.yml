@@ -39,9 +39,18 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Upload Dockerrun.aws.json to S3
+      # Set up AWS CLI and configure credentials
+      - name: Set up AWS CLI
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-3  # Your region
+
+      # Upload Dockerrun.aws.json to S3
+      - name: Upload Dockerrun to S3
         run: |
-          aws s3 cp Dockerrun.aws.json s3://docker-ecr-ebs-deployement/Dockerrun.aws.json --region ${{ secrets.AWS_REGION }}
+          aws s3 cp ./Dockerrun.aws.json s3://docker-ecr-ebs-deployement/Dockerrun.aws.json
 
       # Step 5: Deploy to Elastic Beanstalk
       - name: Deploy to Elastic Beanstalk
