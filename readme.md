@@ -35,57 +35,75 @@ From the exploratory data analysis, we found out that anomalous behavviour patte
 
 ## Engineered Features
 
-From the provided networks, the following features were extracted:
+From the provided networks, the following features were extracted (with their predictiveness scores):
 
-* Feature 1 - this feature helps us to measure *X* activity and is expected to be much higher in anomalies/normal behaviour
-* Feature 2 - this feature helps us to measure *X* activity and is expected to be much higher in anomalies/normal behaviour
-* Feature 3 - this feature helps us to measure *X* activity and is expected to be much higher in anomalies/normal behaviour
+*min_global_dest_degrees      0.5932
+*max_global_dest_degrees      0.5921
+*n_connections                0.5872
+*min_global_source_degrees    0.5495
+*std_local_source_degrees     0.5327
+*std_global_source_degrees    0.4437
+*max_global_source_degrees    0.3674
+*avg_global_dest_degrees      0.3370
+*avg_global_source_degrees    0.3289
+*min_local_dest_degrees       0.0078
+*min_local_source_degrees     0.0000
 
-As a result of this feature engineering work, the ROC AUC for the final model has increased by 30% and has improved F1 score uplift from the baseline model from 1.5 to 1.8.
+**Observations:**
+* Most of the engineered features have relatively highe predictiveness score
+* The most predictive features are `global`
+* Features with no predictive power measure minimum degrees of local graphs
+* Relationships between engineered features and the target are not-linear
+
+**Impact**
+* `min_local_dest_degrees` and `min_local_source_degrees` can be dropped
+* Tree based models need to be used to capture the engineered relationships 
+
+As a result of this feature engineering work, the ROC AUC for the final model scored more than 0.98.
 
 ## Model Selection
 
-Models were compared between each other using ROC AUC since we're dealing with binary classification task and the label distribution is relatively balanced.
-2 models (XGBoost and LightGBM) were tuned for 50 iterations. The best performing model is LightGBM with the following parameters:
+Models were compared between each other using F1 score, balance and recall, since we're dealing with binary classification task and the label distribution is relatively balanced.
+The best performing model was HistGradientBoostingClassifier and it  out performs the baseline model in term of F1 score by 0.20 with the following parameters:
 
 ```json
 {
-    colsample_by_tree: 0.2,
-    num_trees: 2454,
-    learning_rate: 0.02,
-    subsample: 0.5
+    'max_iter': 86,
+    'max_leaf_nodes': 18,
+     'max_depth': 7,
+      'l2_regularization': 0.6673268390658417
 }
 ```
 
-![ROC and PR curves](assets/roc_pr_curves.png)
+![ROC and PR curves](assets/f1_threshold.png)
 
-LightGBM has outperformed XGBoost by *X%* in terms of ROC AUC. From the PR AUC curves, we can also see that it can give use gigher level of recall with the same precision at most of the thresholds, so this model is selected for deployment.
+Threshold with max F1 score is at 0.63, so this model is selected for deployment.
 
 ### Model Explainability
 
 ![Shap](assets/shap.png)
 
-The selected model has a well balanced feature improtance distribution, with top 3 features being *X, Y, and ~*. The directions of SHAP values are intuitive, since we expect that anomalies have larger rate of *X* and *Y* and smaller number of *Z*
-Notably, the engineered features are also considered to be important (4th, 5th and 7th place), which means that the feature engineering effort was successful.
+SHAP values suggest that smaller networks tend to be more anomalous
+Notably, the engineered features are also considered to be the most important, which means that the feature engineering effort was successful.
 
 ## Business Metrics
 
 To determine the achieved business metrics, we first need to set the threshold for our classifier.
 
-![ROC and PR curves](assets/thresholds.png)
+![ROC and PR curves](assets/f1_threshold.png)
 
-From the threshold analysis, we can see that the maximum F1 score we can achieve is *X* across a variety of thresholds. For the purpose of this project, we can assume that the business is more interested in obtaining higher recall than precision, so we'll set the threshold at *X* which gives us the following metrics *(numbers are made up)*:
+From the threshold analysis, we can see that the maximum F1 score we can achieve is 0.95 across a variety of thresholds. For the purpose of this project, we can assume that the business is more interested in obtaining higher recall than precision, so we'll set the threshold at 0.24 which gives us the following metrics :
 
-| Threshold  | 0.25 |
+| Threshold  | 0.24 |
 |------------|------|
-| Precision  | 0.7  |
-| Recall     | 0.9  |
-| F1 Score   | 0.85 |
-| Alert Rate | 0.02 |
+| Precision  | 0.81 |
+| Recall     | 0.98 |
+| F1 Score   | 0.90 |
+
 
 ## Prediction Service
 
-For this project, the assumtpion is that feature engineering will be handled by another serivce, so the deployment part is responsible purely for the model inference.
+For this project, the assumpion is that feature engineering will be handled by another serivce, so the deployment part is responsible purely for the model inference.
 To create the API locally, you'll need to use Docker.
 
 ### Step 1: Build Docker Image
@@ -121,7 +139,3 @@ To run these tests on your machine, you'll need to run the `measure_response.py`
 ```shell
 python app/measure_response.py
 ```
-
-## Authors
-
-* [Antons Tocilins-Ruberts](https://github.com/aruberts)
