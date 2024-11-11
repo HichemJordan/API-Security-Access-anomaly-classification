@@ -70,12 +70,10 @@ The best performing model was HistGradientBoostingClassifier and it  out perform
 {
     'max_iter': 86,
     'max_leaf_nodes': 18,
-     'max_depth': 7,
-      'l2_regularization': 0.6673268390658417
+    'max_depth': 7,
+    'l2_regularization': 0.6673268390658417
 }
 ```
-
-![ROC and PR curves](assets/f1_threshold.png)
 
 Threshold with max F1 score is at 0.63, so this model is selected for deployment.
 
