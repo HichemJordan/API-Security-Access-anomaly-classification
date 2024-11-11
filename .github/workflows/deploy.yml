@@ -53,5 +53,4 @@ jobs:
           --application-name $EB_APP_NAME \
           --environment-name $EB_ENV_NAME \
           --version-label $GITHUB_SHA \
-          --image-name https://209479286821.dkr.ecr.eu-west-3.amazonaws.com/ecrrepo:latest \
           --region $AWS_REGION
