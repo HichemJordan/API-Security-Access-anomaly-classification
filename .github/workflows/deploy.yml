@@ -49,13 +49,9 @@ jobs:
           EB_ENV_NAME: ${{ secrets.EB_ENV_NAME }}
           ECR_IMAGE: 209479286821.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/ecrrepo:latest
         run: |
-          echo "region : $AWS_REGION"
-          # Create a new application version in Elastic Beanstalk using the latest Docker image
-          aws elasticbeanstalk create-application-version --application-name $EB_APP_NAME \
-            --version-label $GITHUB_SHA --source-bundle S3Bucket=my-s3-bucket,S3Key=my-key \
-            --region $AWS_REGION
-
-          # Update the ElastAWSic Beanstalk environment to use the new version
-          aws elasticbeanstalk update-environment --application-name $EB_APP_NAME \
-            --environment-name $EB_ENV_NAME --version-label $GITHUB_SHA \
-            --region $AWS_REGION
+          aws elasticbeanstalk update-environment \
+          --application-name $EB_APP_NAME \
+          --environment-name $EB_ENV_NAME \
+          --version-label $GITHUB_SHA \
+          --image-name https://209479286821.dkr.ecr.eu-west-3.amazonaws.com/ecrrepo:latest \
+          --region $AWS_REGION
