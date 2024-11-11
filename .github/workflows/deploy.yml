@@ -30,7 +30,7 @@ jobs:
       # Step 4: Build and push the Docker image to ECR
       - name: Build and Push Docker Image
         env:
-          ECR_REGISTRY: ${{ secrets.AWS_REGION }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          ECR_REGISTRY: 209479286821.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           ECR_REPOSITORY: ecrrepo
           IMAGE_TAG: latest
         run: |
@@ -49,7 +49,7 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           EB_APP_NAME: ${{ secrets.EB_APP_NAME }}
           EB_ENV_NAME: ${{ secrets.EB_ENV_NAME }}
-          ECR_IMAGE: ${{ secrets.AWS_REGION }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/ecrrepo:latest
+          ECR_IMAGE: 209479286821.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/ecrrepo:latest
         run: |
           # Create a new application version in Elastic Beanstalk using the latest Docker image
           aws elasticbeanstalk create-application-version --application-name $EB_APP_NAME \
