@@ -25,18 +25,16 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_REGION }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 209479286821.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+        
+        
       # Step 4: Build and push the Docker image to ECR
       - name: Build and Push Docker Image
         env:
-          ECR_REGISTRY: ${{ secrets.AWS_REGION }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          ECR_REGISTRY: 209479286821.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           ECR_REPOSITORY: ecrrepo
           IMAGE_TAG: latest
         run: |
-          # Create ECR repository if it doesn't exist
-          aws ecr describe-repositories --repository-names $ECR_REPOSITORY || aws ecr create-repository --repository-name $ECR_REPOSITORY
-
           # Build and push the Docker image
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -49,14 +47,9 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           EB_APP_NAME: ${{ secrets.EB_APP_NAME }}
           EB_ENV_NAME: ${{ secrets.EB_ENV_NAME }}
-          ECR_IMAGE: ${{ secrets.AWS_REGION }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/ecrrepo:latest
+          ECR_IMAGE: 209479286821.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/ecrrepo:latest
         run: |
-          # Create a new application version in Elastic Beanstalk using the latest Docker image
-          aws elasticbeanstalk create-application-version --application-name $EB_APP_NAME \
-            --version-label $GITHUB_SHA --source-bundle S3Bucket=my-s3-bucket,S3Key=my-key \
-            --region $AWS_REGION
-
-          # Update the ElastAWSic Beanstalk environment to use the new version
-          aws elasticbeanstalk update-environment --application-name $EB_APP_NAME \
-            --environment-name $EB_ENV_NAME --version-label $GITHUB_SHA \
-            --region $AWS_REGION
+          aws elasticbeanstalk update-environment \
+          --application-name $EB_APP_NAME \
+          --environment-name $EB_ENV_NAME \
+          --region $AWS_REGION
