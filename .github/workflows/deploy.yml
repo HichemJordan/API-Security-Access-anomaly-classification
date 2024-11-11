@@ -64,7 +64,7 @@ jobs:
         run: |
           aws elasticbeanstalk create-application-version --application-name $EB_APP_NAME \
             --version-label $GITHUB_SHA 
-            --source-bundle S3Bucket=docker-ecr-ebs-deployement,S3Key=Dockerrun.aws.json \
+            --source-bundle S3Bucket="docker-ecr-ebs-deployement",S3Key="Dockerrun.aws.json" \
             --region $AWS_REGION
 
           aws elasticbeanstalk update-environment --application-name $EB_APP_NAME \
