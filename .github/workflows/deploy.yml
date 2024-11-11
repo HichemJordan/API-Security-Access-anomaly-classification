@@ -63,7 +63,7 @@ jobs:
           ECR_IMAGE: 209479286821.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/ecrrepo:latest
         run: |
           aws elasticbeanstalk create-application-version --application-name $EB_APP_NAME \
-            --version-label $GITHUB_SHA 
+            --version-label $GITHUB_SHA \
             --source-bundle S3Bucket="docker-ecr-ebs-deployement",S3Key="Dockerrun.aws.json" \
             --region $AWS_REGION
 
