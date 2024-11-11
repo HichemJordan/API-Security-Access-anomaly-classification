@@ -37,17 +37,17 @@ From the exploratory data analysis, we found out that anomalous behavviour patte
 
 From the provided networks, the following features were extracted (with their predictiveness scores):
 
-*min_global_dest_degrees      0.5932
-*max_global_dest_degrees      0.5921
-*n_connections                0.5872
-*min_global_source_degrees    0.5495
-*std_local_source_degrees     0.5327
-*std_global_source_degrees    0.4437
-*max_global_source_degrees    0.3674
-*avg_global_dest_degrees      0.3370
-*avg_global_source_degrees    0.3289
-*min_local_dest_degrees       0.0078
-*min_local_source_degrees     0.0000
+- min_global_dest_degrees      0.5932
+- max_global_dest_degrees      0.5921
+- n_connections                0.5872
+- min_global_source_degrees    0.5495
+- std_local_source_degrees     0.5327
+- std_global_source_degrees    0.4437
+- max_global_source_degrees    0.3674
+- avg_global_dest_degrees      0.3370
+- avg_global_source_degrees    0.3289
+- min_local_dest_degrees       0.0078
+- min_local_source_degrees     0.0000
 
 **Observations:**
 * Most of the engineered features have relatively highe predictiveness score
